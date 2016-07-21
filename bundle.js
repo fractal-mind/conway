@@ -82,7 +82,7 @@
 	      return false;
 	    }
 	  };
-	  for (var i = 0; i < 2500; i++) {
+	  for (var i = 0; i < 625; i++) {
 	    cellStates.push({
 	      key: i,
 	      alive: getRandomState()
@@ -95,11 +95,11 @@
 	var buildRows = function buildRows() {
 	  var rows = [];
 	  var rowIndex = 0;
-	  for (var _i = 0; _i < 50; _i++) {
+	  for (var _i = 0; _i < 25; _i++) {
 
 	    var thisRow = [];
-	    for (var j = 0; j < 50; j++) {
-	      thisRow.push(cellStates[rowIndex * 50 + j]);
+	    for (var j = 0; j < 25; j++) {
+	      thisRow.push(cellStates[rowIndex * 25 + j]);
 	    }
 	    rows.push(_react2.default.createElement(CellRow, { cells: thisRow, key: _i }));
 	    rowIndex++;
@@ -119,9 +119,20 @@
 	  _createClass(Layout, [{
 	    key: 'render',
 	    value: function render() {
+	      var handleMouseDown = function handleMouseDown() {
+	        mouseIsDown = true;
+	      };
+
+	      var handleMouseUp = function handleMouseUp() {
+	        mouseIsDown = false;
+	      };
 	      return _react2.default.createElement(
 	        'div',
-	        { className: 'container' },
+	        { className: 'container', onMouseDown: function onMouseDown() {
+	            return handleMouseDown();
+	          }, onMouseUp: function onMouseUp() {
+	            return handleMouseUp();
+	          } },
 	        _react2.default.createElement(Life, null)
 	      );
 	    }
@@ -144,7 +155,12 @@
 	  _createClass(Life, [{
 	    key: 'render',
 	    value: function render() {
-	      return _react2.default.createElement(Grid, null);
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(Grid, null),
+	        _react2.default.createElement(Buttons, null)
+	      );
 	    }
 	  }]);
 
@@ -153,8 +169,136 @@
 
 	;
 
-	var Grid = function (_React$Component3) {
-	  _inherits(Grid, _React$Component3);
+	var intervalId = void 0;
+
+	var Buttons = function (_React$Component3) {
+	  _inherits(Buttons, _React$Component3);
+
+	  function Buttons() {
+	    _classCallCheck(this, Buttons);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Buttons).apply(this, arguments));
+	  }
+
+	  _createClass(Buttons, [{
+	    key: 'render',
+	    value: function render() {
+
+	      var handlePause = function handlePause() {
+	        console.log(intervalId);
+	        clearInterval(intervalId);
+	      };
+	      var handlePlay = function handlePlay() {
+	        intervalId = setInterval(lifeCycle, 500);
+	        //determines play speed
+	      };
+
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(PauseButton, { pause: function pause() {
+	            return handlePause(intervalId);
+	          } }),
+	        _react2.default.createElement(PlayButton, { play: function play() {
+	            return handlePlay(intervalId);
+	          } }),
+	        _react2.default.createElement(ClearButton, null)
+	      );
+	    }
+	  }]);
+
+	  return Buttons;
+	}(_react2.default.Component);
+
+	;
+
+	var PauseButton = function (_React$Component4) {
+	  _inherits(PauseButton, _React$Component4);
+
+	  function PauseButton() {
+	    _classCallCheck(this, PauseButton);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(PauseButton).apply(this, arguments));
+	  }
+
+	  _createClass(PauseButton, [{
+	    key: 'render',
+	    value: function render() {
+
+	      return _react2.default.createElement(
+	        'button',
+	        { onClick: this.props.pause },
+	        'Pause'
+	      );
+	    }
+	  }]);
+
+	  return PauseButton;
+	}(_react2.default.Component);
+
+	;
+
+	var PlayButton = function (_React$Component5) {
+	  _inherits(PlayButton, _React$Component5);
+
+	  function PlayButton() {
+	    _classCallCheck(this, PlayButton);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(PlayButton).apply(this, arguments));
+	  }
+
+	  _createClass(PlayButton, [{
+	    key: 'render',
+	    value: function render() {
+
+	      return _react2.default.createElement(
+	        'button',
+	        { onClick: this.props.play },
+	        'Play'
+	      );
+	    }
+	  }]);
+
+	  return PlayButton;
+	}(_react2.default.Component);
+
+	;
+
+	var ClearButton = function (_React$Component6) {
+	  _inherits(ClearButton, _React$Component6);
+
+	  function ClearButton() {
+	    _classCallCheck(this, ClearButton);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ClearButton).apply(this, arguments));
+	  }
+
+	  _createClass(ClearButton, [{
+	    key: 'render',
+	    value: function render() {
+	      var handleClick = function handleClick() {
+	        for (var _i2 = 0; _i2 < cellStates.length; _i2++) {
+	          cellStates[_i2].alive = false;
+	        }
+	        update();
+	      };
+	      return _react2.default.createElement(
+	        'button',
+	        { onClick: function onClick() {
+	            return handleClick();
+	          } },
+	        'Clear'
+	      );
+	    }
+	  }]);
+
+	  return ClearButton;
+	}(_react2.default.Component);
+
+	;
+
+	var Grid = function (_React$Component7) {
+	  _inherits(Grid, _React$Component7);
 
 	  function Grid() {
 	    _classCallCheck(this, Grid);
@@ -178,8 +322,8 @@
 
 	;
 
-	var CellMap = function (_React$Component4) {
-	  _inherits(CellMap, _React$Component4);
+	var CellMap = function (_React$Component8) {
+	  _inherits(CellMap, _React$Component8);
 
 	  function CellMap() {
 	    _classCallCheck(this, CellMap);
@@ -206,8 +350,8 @@
 
 	;
 
-	var CellRow = function (_React$Component5) {
-	  _inherits(CellRow, _React$Component5);
+	var CellRow = function (_React$Component9) {
+	  _inherits(CellRow, _React$Component9);
 
 	  function CellRow() {
 	    _classCallCheck(this, CellRow);
@@ -231,8 +375,10 @@
 	  return CellRow;
 	}(_react2.default.Component);
 
-	var Cell = function (_React$Component6) {
-	  _inherits(Cell, _React$Component6);
+	var mouseIsDown = false;
+
+	var Cell = function (_React$Component10) {
+	  _inherits(Cell, _React$Component10);
 
 	  function Cell() {
 	    _classCallCheck(this, Cell);
@@ -243,23 +389,41 @@
 	  _createClass(Cell, [{
 	    key: 'render',
 	    value: function render() {
-	      var _this7 = this;
+	      var _this11 = this;
 
-	      var handleClick = function handleClick() {
-	        cellStates[_this7.props.index].alive = !cellStates[_this7.props.index].alive;
+	      var handleMouseDown = function handleMouseDown() {
+	        console.log(_this11.props.index);
+	        mouseIsDown = true;
+	        cellStates[_this11.props.index].alive = !cellStates[_this11.props.index].alive;
 	        update();
 	      };
+
+	      var handleMouseOver = function handleMouseOver() {
+	        if (mouseIsDown) {
+	          cellStates[_this11.props.index].alive = !cellStates[_this11.props.index].alive;
+	        }
+	        update();
+	      };
+
+	      var handleMouseUp = function handleMouseUp() {
+	        mouseIsDown = false;
+	      };
+
 	      if (this.props.alive) {
-	        return _react2.default.createElement('th', { className: 'liveCell', onClick: function onClick() {
-	            return handleClick();
+	        return _react2.default.createElement('th', { className: 'liveCell', onMouseDown: function onMouseDown() {
+	            return handleMouseDown();
+	          }, onMouseOver: function onMouseOver() {
+	            return handleMouseOver();
 	          }, onMouseUp: function onMouseUp() {
-	            return handleClick();
+	            return handleMouseUp();
 	          } });
 	      } else {
-	        return _react2.default.createElement('th', { className: 'deadCell', onClick: function onClick() {
-	            return handleClick();
+	        return _react2.default.createElement('th', { className: 'deadCell', onMouseDown: function onMouseDown() {
+	            return handleMouseDown();
+	          }, onMouseOver: function onMouseOver() {
+	            return handleMouseOver();
 	          }, onMouseUp: function onMouseUp() {
-	            return handleClick();
+	            return handleMouseUp();
 	          } });
 	      };
 	    }
@@ -270,10 +434,83 @@
 
 	;
 
-	var lifeCycle = function lifeCycle() {};
+	//here is where the rules of the game are defined. this function is called according to handlePlay on Buttons
+	var lifeCycle = function lifeCycle() {
+	  var cellCache = cellStates;
+	  for (var _i3 = 0; _i3 < cellCache.length; _i3++) {
+	    var count = 0;
+	    console.log("running");
+	    //NW
+	    if (cellStates[_i3 - 26] && cellStates[_i3 - 26].alive === true) {
+	      count++;console.log("Tally one score for " + _i3 + " because " + (_i3 - 26));
+	    }
+	    //N
+	    if (cellStates[_i3 - 25] && cellStates[_i3 - 25].alive === true) {
+	      count++;console.log("Tally one score for " + _i3 + " because " + (_i3 - 25));
+	    }
+	    //NE
+	    if (cellStates[_i3 - 24] && cellStates[_i3 - 24].alive === true) {
+	      count++;console.log("Tally one score for " + _i3 + " because " + (_i3 - 24));
+	    }
+
+	    //SW
+	    if (cellStates[_i3 + 24] && cellStates[_i3 + 24].alive === true) {
+	      count++;console.log("Tally one score for " + _i3 + " because " + (_i3 + 24));
+	    }
+	    //S
+	    if (cellStates[_i3 + 25] && cellStates[_i3 + 25].alive === true) {
+	      count++;console.log("Tally one score for " + _i3 + " because " + (_i3 + 25));
+	    }
+	    //SE
+	    if (cellStates[_i3 + 26] && cellStates[_i3 + 26].alive === true) {
+	      count++;console.log("Tally one score for " + _i3 + " because " + (_i3 + 26));
+	    };
+
+	    if (_i3 % 25 !== 0) {
+	      //W
+	      if (cellStates[_i3 - 1] && cellStates[_i3 - 1].alive === true) {
+	        count++;console.log("Tally one score for " + _i3 + " because " + (_i3 - 1));
+	      }
+	    }
+	    if ((_i3 + 1) % 25 !== 0) {
+	      //E
+	      if (cellStates[_i3 + 1] && cellStates[_i3 + 1].alive === true) {
+	        count++;console.log("Tally one score for " + _i3 + " because " + (_i3 + 1));
+	      }
+	    }
+
+	    if (cellStates[_i3].alive === true) {
+
+	      if (count < 2) {
+	        console.log("Cell " + _i3 + " dies with " + count + " neightbors");
+	        cellCache[_i3].alive = false;
+	      }
+	      if (count > 3) {
+	        console.log("Cell " + _i3 + " dies with " + count + " neightbors");
+	        cellCache[_i3].alive = false;
+	      }
+	      if (count === 2) {
+	        console.log("Cell " + _i3 + " lives with " + count + " neightbors");
+	        cellCache[_i3].alive = true;
+	      }
+	      if (count === 3) {
+	        console.log("Cell " + _i3 + " lives with " + count + " neightbors");
+	        cellCache[_i3].alive = true;
+	      }
+	    };
+	    if (cellStates[_i3].alive === false) {
+
+	      if (count === 3) {
+	        console.log("Cell " + _i3 + " is born with " + count + " neightbors y'all");
+	        cellCache[_i3].alive = true;
+	      };
+	    };
+	  }
+	  cellStates = cellCache;
+	  update();
+	};
 
 	var update = function update() {
-	  console.log("updated");
 	  _reactDom2.default.render(_react2.default.createElement(Layout, null), target);
 	};
 
