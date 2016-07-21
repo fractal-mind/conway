@@ -85,7 +85,8 @@
 	  for (var i = 0; i < 625; i++) {
 	    cellStates.push({
 	      key: i,
-	      alive: getRandomState()
+	      alive: getRandomState(),
+	      score: null
 	    });
 	  }
 
@@ -105,6 +106,43 @@
 	    rowIndex++;
 	  }
 	  rowStates = rows;
+	};
+
+	var scoreSet = false;
+
+	var evaluate = function evaluate() {
+	  if (scoreSet === true) {
+	    for (var _i2 = 0; _i2 < cellStates.length; _i2++) {
+	      if (cellStates[_i2].alive === true) {
+
+	        if (cellStates[_i2].score < 2) {
+	          console.log("Cell " + _i2 + " dies with " + cellStates[_i2].score + " neightbors");
+	          cellStates[_i2].alive = false;
+	        }
+	        if (cellStates[_i2].score > 3) {
+	          console.log("Cell " + _i2 + " dies with " + cellStates[_i2].score + " neightbors");
+	          cellStates[_i2].alive = false;
+	        }
+	        if (cellStates[_i2].score === 2) {
+	          console.log("Cell " + _i2 + " lives with " + cellStates[_i2].score + " neightbors");
+	          cellStates[_i2].alive = true;
+	        }
+	        if (cellStates[_i2].score === 3) {
+	          console.log("Cell " + _i2 + " lives with " + cellStates[_i2].score + " neightbors");
+	          cellStates[_i2].alive = true;
+	        }
+	      };
+	      if (cellStates[_i2].alive === false) {
+
+	        if (cellStates[_i2].score === 3) {
+	          console.log("Cell " + _i2 + " is born with " + cellStates[_i2].score + " neightbors y'all");
+	          cellStates[_i2].alive = true;
+	        };
+	      };
+	      cellStates[_i2].score = null;
+	    }
+	    scoreSet = false;
+	  };
 	};
 
 	var Layout = function (_React$Component) {
@@ -277,8 +315,8 @@
 	    key: 'render',
 	    value: function render() {
 	      var handleClick = function handleClick() {
-	        for (var _i2 = 0; _i2 < cellStates.length; _i2++) {
-	          cellStates[_i2].alive = false;
+	        for (var _i3 = 0; _i3 < cellStates.length; _i3++) {
+	          cellStates[_i3].alive = false;
 	        }
 	        update();
 	      };
@@ -334,6 +372,7 @@
 	  _createClass(CellMap, [{
 	    key: 'render',
 	    value: function render() {
+	      evaluate();
 	      buildRows();
 	      return _react2.default.createElement(
 	        'tbody',
@@ -434,79 +473,82 @@
 
 	;
 
+	var cellCache = void 0;
 	//here is where the rules of the game are defined. this function is called according to handlePlay on Buttons
 	var lifeCycle = function lifeCycle() {
-	  var cellCache = cellStates;
-	  for (var _i3 = 0; _i3 < cellCache.length; _i3++) {
+	  cellCache = cellStates;
+	  for (var _i4 = 0; _i4 < cellCache.length; _i4++) {
 	    var count = 0;
-	    console.log("running");
+
 	    //NW
-	    if (cellStates[_i3 - 26] && cellStates[_i3 - 26].alive === true) {
-	      count++;console.log("Tally one score for " + _i3 + " because " + (_i3 - 26));
+	    if (cellStates[_i4 - 26] && cellStates[_i4 - 26].alive === true) {
+	      count++;console.log("Tally one score for " + _i4 + " because " + (_i4 - 26));
 	    }
 	    //N
-	    if (cellStates[_i3 - 25] && cellStates[_i3 - 25].alive === true) {
-	      count++;console.log("Tally one score for " + _i3 + " because " + (_i3 - 25));
+	    if (cellStates[_i4 - 25] && cellStates[_i4 - 25].alive === true) {
+	      count++;console.log("Tally one score for " + _i4 + " because " + (_i4 - 25));
 	    }
 	    //NE
-	    if (cellStates[_i3 - 24] && cellStates[_i3 - 24].alive === true) {
-	      count++;console.log("Tally one score for " + _i3 + " because " + (_i3 - 24));
+	    if (cellStates[_i4 - 24] && cellStates[_i4 - 24].alive === true) {
+	      count++;console.log("Tally one score for " + _i4 + " because " + (_i4 - 24));
 	    }
 
 	    //SW
-	    if (cellStates[_i3 + 24] && cellStates[_i3 + 24].alive === true) {
-	      count++;console.log("Tally one score for " + _i3 + " because " + (_i3 + 24));
+	    if (cellStates[_i4 + 24] && cellStates[_i4 + 24].alive === true) {
+	      count++;console.log("Tally one score for " + _i4 + " because " + (_i4 + 24));
 	    }
 	    //S
-	    if (cellStates[_i3 + 25] && cellStates[_i3 + 25].alive === true) {
-	      count++;console.log("Tally one score for " + _i3 + " because " + (_i3 + 25));
+	    if (cellStates[_i4 + 25] && cellStates[_i4 + 25].alive === true) {
+	      count++;console.log("Tally one score for " + _i4 + " because " + (_i4 + 25));
 	    }
 	    //SE
-	    if (cellStates[_i3 + 26] && cellStates[_i3 + 26].alive === true) {
-	      count++;console.log("Tally one score for " + _i3 + " because " + (_i3 + 26));
+	    if (cellStates[_i4 + 26] && cellStates[_i4 + 26].alive === true) {
+	      count++;console.log("Tally one score for " + _i4 + " because " + (_i4 + 26));
 	    };
 
-	    if (_i3 % 25 !== 0) {
+	    if (_i4 % 25 !== 0) {
 	      //W
-	      if (cellStates[_i3 - 1] && cellStates[_i3 - 1].alive === true) {
-	        count++;console.log("Tally one score for " + _i3 + " because " + (_i3 - 1));
+	      if (cellStates[_i4 - 1] && cellStates[_i4 - 1].alive === true) {
+	        count++;console.log(cellStates[_i4 - 1]);
 	      }
 	    }
-	    if ((_i3 + 1) % 25 !== 0) {
+	    if ((_i4 + 1) % 25 !== 0) {
 	      //E
-	      if (cellStates[_i3 + 1] && cellStates[_i3 + 1].alive === true) {
-	        count++;console.log("Tally one score for " + _i3 + " because " + (_i3 + 1));
+	      if (cellStates[_i4 + 1] && cellStates[_i4 + 1].alive === true) {
+	        count++;console.log("Tally one score for " + _i4 + " because " + (_i4 + 1));
 	      }
 	    }
-
-	    if (cellStates[_i3].alive === true) {
-
-	      if (count < 2) {
-	        console.log("Cell " + _i3 + " dies with " + count + " neightbors");
-	        cellCache[_i3].alive = false;
+	    cellStates[_i4].score = count;
+	    scoreSet = true;
+	    /**if (cellStates[i].alive === true) {
+	        if((count < 2)){
+	        console.log("Cell " + i + " dies with " + count + " neightbors");
+	        cellCache[i].alive = false;
 	      }
-	      if (count > 3) {
-	        console.log("Cell " + _i3 + " dies with " + count + " neightbors");
-	        cellCache[_i3].alive = false;
+	      if((count > 3)){
+	        console.log("Cell " + i + " dies with " + count + " neightbors");
+	        cellCache[i].alive = false;
 	      }
-	      if (count === 2) {
-	        console.log("Cell " + _i3 + " lives with " + count + " neightbors");
-	        cellCache[_i3].alive = true;
+	      if((count === 2)){
+	        console.log("Cell " + i + " lives with " + count + " neightbors");
+	        cellCache[i].alive = true;
 	      }
-	      if (count === 3) {
-	        console.log("Cell " + _i3 + " lives with " + count + " neightbors");
-	        cellCache[_i3].alive = true;
+	      if((count === 3)){
+	        console.log("Cell " + i + " lives with " + count + " neightbors");
+	        cellCache[i].alive = true;
 	      }
 	    };
-	    if (cellStates[_i3].alive === false) {
-
-	      if (count === 3) {
-	        console.log("Cell " + _i3 + " is born with " + count + " neightbors y'all");
-	        cellCache[_i3].alive = true;
+	    if (cellStates[i].alive === false){
+	        if (count === 3) {
+	        console.log(cellStates[i].alive);
+	        console.log("Cell " + i + " is born with " + count + " neightbors y'all");
+	        console.log(cellStates[i].alive);
+	        cellCache[i].alive = true;
+	        console.log(cellCache[i].alive);
+	        console.log(cellStates[i].alive);
 	      };
-	    };
+	    };**/
 	  }
-	  cellStates = cellCache;
 	  update();
 	};
 

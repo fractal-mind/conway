@@ -23,7 +23,8 @@ if (!booted) {
   for (let i = 0; i < 625; i++) {
     cellStates.push({
       key: i,
-      alive: (getRandomState())
+      alive: (getRandomState()),
+      score: null
     })
   }
 
@@ -43,6 +44,43 @@ let buildRows = () => {
    rowIndex++;
  }
  rowStates = rows;
+}
+
+let scoreSet = false;
+
+let evaluate = () => {
+  if (scoreSet === true) {
+    for (let i = 0; i < cellStates.length; i++) {
+      if (cellStates[i].alive === true) {
+
+        if((cellStates[i].score < 2)){
+          console.log("Cell " + i + " dies with " + cellStates[i].score + " neightbors");
+          cellStates[i].alive = false;
+        }
+        if((cellStates[i].score > 3)){
+          console.log("Cell " + i + " dies with " + cellStates[i].score + " neightbors");
+          cellStates[i].alive = false;
+        }
+        if((cellStates[i].score === 2)){
+          console.log("Cell " + i + " lives with " + cellStates[i].score + " neightbors");
+          cellStates[i].alive = true;
+        }
+        if((cellStates[i].score === 3)){
+          console.log("Cell " + i + " lives with " + cellStates[i].score + " neightbors");
+          cellStates[i].alive = true;
+        }
+      };
+      if (cellStates[i].alive === false){
+
+        if (cellStates[i].score === 3) {
+          console.log("Cell " + i + " is born with " + cellStates[i].score + " neightbors y'all");
+          cellStates[i].alive = true;
+        };
+      };
+      cellStates[i].score = null;
+    }
+    scoreSet = false;
+  };
 }
 
 class Layout extends React.Component {
@@ -142,6 +180,7 @@ class Grid extends React.Component {
 
 class CellMap extends React.Component {
   render(){
+    evaluate();
     buildRows();
     return(
       <tbody>
@@ -196,13 +235,13 @@ class Cell extends React.Component {
   };
 };
 
-
+let cellCache;
 //here is where the rules of the game are defined. this function is called according to handlePlay on Buttons
 let lifeCycle = () => {
-  let cellCache = cellStates;
+  cellCache = cellStates;
   for(let i = 0; i < cellCache.length; i++){
     let count = 0;
-    console.log("running")
+
       //NW
       if ((cellStates[i - 26]) && (cellStates[i - 26].alive === true)) { count++; console.log("Tally one score for " + i + " because " + (i - 26))}
       //N
@@ -219,14 +258,15 @@ let lifeCycle = () => {
 
       if ((i % 25) !== 0){
         //W
-        if ((cellStates[i - 1]) && (cellStates[i - 1].alive === true)) { count++; console.log("Tally one score for " + i + " because " + (i - 1))}
+        if ((cellStates[i - 1]) && (cellStates[i - 1].alive === true)) { count++; console.log(cellStates[i - 1])}
       }
       if (((i + 1) % 25) !== 0){
         //E
         if ((cellStates[i + 1]) && (cellStates[i + 1].alive === true)) { count++; console.log("Tally one score for " + i + " because " + (i + 1))}
       }
-
-          if (cellStates[i].alive === true) {
+      cellStates[i].score = count;
+      scoreSet = true;
+          /**if (cellStates[i].alive === true) {
 
             if((count < 2)){
               console.log("Cell " + i + " dies with " + count + " neightbors");
@@ -248,14 +288,17 @@ let lifeCycle = () => {
           if (cellStates[i].alive === false){
 
             if (count === 3) {
+              console.log(cellStates[i].alive);
               console.log("Cell " + i + " is born with " + count + " neightbors y'all");
+              console.log(cellStates[i].alive);
               cellCache[i].alive = true;
+              console.log(cellCache[i].alive);
+              console.log(cellStates[i].alive);
             };
-          };
+          };**/
 
 
   }
-  cellStates = cellCache;
   update();
 }
 
