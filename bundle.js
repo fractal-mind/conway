@@ -334,19 +334,19 @@
 	  }
 
 	  _createClass(ClearButton, [{
-	    key: 'handleClick',
-	    value: function handleClick() {
-	      for (var _i3 = 0; _i3 < cellStates.length; _i3++) {
-	        cellStates[_i3].alive = false;
-	      }
-	      update();
-	    }
-	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var handleClick = function handleClick() {
+	        for (var _i3 = 0; _i3 < cellStates.length; _i3++) {
+	          cellStates[_i3].alive = false;
+	        }
+	        update();
+	      };
 	      return _react2.default.createElement(
 	        'i',
-	        { className: 'clearButton material-icons', onClick: this.handleClick },
+	        { className: 'clearButton material-icons', onClick: function onClick() {
+	            return handleClick();
+	          } },
 	        'clear'
 	      );
 	    }
@@ -20280,7 +20280,7 @@
 
 
 	// module
-	exports.push([module.id, "body {\n  background-color: #424242;\n  color: white; }\n\n.container {\n  padding-right: 15px;\n  padding-left: 15px;\n  margin-right: auto;\n  margin-left: auto;\n  position: relative; }\n\ntable {\n  position: relative;\n  top: 1em;\n  width: 250px;\n  left: 19%; }\n\nth {\n  min-width: 30px;\n  min-height: 30px; }\n\n.liveCell {\n  background-color: #7cb342; }\n\n.deadCell {\n  background-color: #212121; }\n\n.controlButton {\n  position: relative;\n  color: #7cb342;\n  font-size: 71px;\n  top: .5em;\n  left: 3.4em; }\n\n.clearButton {\n  position: relative;\n  font-size: 50px;\n  color: #B71C1C;\n  border-radius: 100%;\n  border: 6px solid;\n  top: .59em;\n  left: 16.5em; }\n\n.generationCounter {\n  font-size: 60px;\n  position: relative;\n  top: -1.73em;\n  left: 9em; }\n\na {\n  color: white; }\n\n.attribution {\n  position: relative;\n  float: right;\n  top: -8em; }\n\n.source {\n  position: relative;\n  top: -8em; }\n\n@media (max-width: 768px) {\n  .container {\n    width: 750px; } }\n\n@media (max-width: 992px) {\n  .container {\n    width: 970px; } }\n\n@media (max-width: 1500px) {\n  .container {\n    width: 1170px; } }\n", ""]);
+	exports.push([module.id, "body {\n  background-color: #424242;\n  color: white; }\n\n.container {\n  padding-right: 15px;\n  padding-left: 15px;\n  margin-right: auto;\n  margin-left: auto;\n  position: relative; }\n\ntable {\n  position: relative;\n  top: 1em;\n  width: 250px;\n  left: 19%; }\n\nth {\n  min-width: 30px;\n  min-height: 30px; }\n\n.liveCell {\n  background-color: #7cb342; }\n\n.deadCell {\n  background-color: #212121; }\n\n.controlButton {\n  position: relative;\n  color: #7cb342;\n  font-size: 71px;\n  top: .5em;\n  left: 3.4em; }\n\n.clearButton {\n  position: relative;\n  font-size: 50px;\n  color: #B71C1C;\n  border-radius: 100%;\n  border: 6px solid;\n  top: .59em;\n  left: 16.5em; }\n\n.generationCounter {\n  font-size: 60px;\n  position: relative;\n  top: -1.73em;\n  left: 9em;\n  width: 4em; }\n\na {\n  color: white; }\n\n.attribution {\n  position: relative;\n  float: right;\n  top: -8em; }\n\n.source {\n  position: relative;\n  top: -8em; }\n\n@media (max-width: 768px) {\n  .container {\n    width: 750px; } }\n\n@media (max-width: 992px) {\n  .container {\n    width: 970px; } }\n\n@media (max-width: 1500px) {\n  .container {\n    width: 1170px; } }\n", ""]);
 
 	// exports
 

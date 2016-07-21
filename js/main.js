@@ -184,16 +184,17 @@ class PlayButton extends React.Component {
 };
 
 class ClearButton extends React.Component {
-  handleClick(){
-    for (let i = 0; i < cellStates.length; i++) {
-      cellStates[i].alive = false;
-    }
-    update();
-  };
+
   render(){
+    let handleClick = () => {
+      for (let i = 0; i < cellStates.length; i++) {
+        cellStates[i].alive = false;
+      }
+      update();
+    }
     return(
 
-      <i className="clearButton material-icons" onClick={this.handleClick}>clear</i>
+      <i className="clearButton material-icons" onClick={() => handleClick()}>clear</i>
     )
   }
 };
