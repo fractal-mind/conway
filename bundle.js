@@ -116,26 +116,21 @@
 	      if (cellStates[_i2].alive === true) {
 
 	        if (cellStates[_i2].score < 2) {
-	          console.log("Cell " + _i2 + " dies with " + cellStates[_i2].score + " neightbors");
 	          cellStates[_i2].alive = false;
 	        }
 	        if (cellStates[_i2].score > 3) {
-	          console.log("Cell " + _i2 + " dies with " + cellStates[_i2].score + " neightbors");
 	          cellStates[_i2].alive = false;
 	        }
 	        if (cellStates[_i2].score === 2) {
-	          console.log("Cell " + _i2 + " lives with " + cellStates[_i2].score + " neightbors");
 	          cellStates[_i2].alive = true;
 	        }
 	        if (cellStates[_i2].score === 3) {
-	          console.log("Cell " + _i2 + " lives with " + cellStates[_i2].score + " neightbors");
 	          cellStates[_i2].alive = true;
 	        }
 	      };
 	      if (cellStates[_i2].alive === false) {
 
 	        if (cellStates[_i2].score === 3) {
-	          console.log("Cell " + _i2 + " is born with " + cellStates[_i2].score + " neightbors y'all");
 	          cellStates[_i2].alive = true;
 	        };
 	      };
@@ -221,13 +216,19 @@
 	  _createClass(Buttons, [{
 	    key: 'render',
 	    value: function render() {
+	      var playMode = true;
 
 	      var handlePause = function handlePause() {
 	        console.log(intervalId);
 	        clearInterval(intervalId);
+	        playMode = false;
+	        console.log(playMode);
+	        update();
 	      };
 	      var handlePlay = function handlePlay() {
 	        intervalId = setInterval(lifeCycle, 500);
+	        playMode = true;
+	        update();
 	        //determines play speed
 	      };
 
@@ -235,11 +236,11 @@
 	        'div',
 	        null,
 	        _react2.default.createElement(PauseButton, { pause: function pause() {
-	            return handlePause(intervalId);
-	          } }),
+	            return handlePause();
+	          }, playMode: intervalId }),
 	        _react2.default.createElement(PlayButton, { play: function play() {
-	            return handlePlay(intervalId);
-	          } }),
+	            return handlePlay();
+	          }, playMode: intervalId }),
 	        _react2.default.createElement(ClearButton, null)
 	      );
 	    }
@@ -265,7 +266,7 @@
 
 	      return _react2.default.createElement(
 	        'button',
-	        { onClick: this.props.pause },
+	        { onClick: this.props.pause, disabled: !intervalId },
 	        'Pause'
 	      );
 	    }
@@ -291,7 +292,7 @@
 
 	      return _react2.default.createElement(
 	        'button',
-	        { onClick: this.props.play },
+	        { onClick: this.props.play, disabled: intervalId },
 	        'Play'
 	      );
 	    }
@@ -473,49 +474,46 @@
 
 	;
 
-	var cellCache = void 0;
 	//here is where the rules of the game are defined. this function is called according to handlePlay on Buttons
 	var lifeCycle = function lifeCycle() {
-	  cellCache = cellStates;
-	  for (var _i4 = 0; _i4 < cellCache.length; _i4++) {
+	  for (var _i4 = 0; _i4 < cellStates.length; _i4++) {
 	    var count = 0;
-
 	    //NW
 	    if (cellStates[_i4 - 26] && cellStates[_i4 - 26].alive === true) {
-	      count++;console.log("Tally one score for " + _i4 + " because " + (_i4 - 26));
+	      count++;
 	    }
 	    //N
 	    if (cellStates[_i4 - 25] && cellStates[_i4 - 25].alive === true) {
-	      count++;console.log("Tally one score for " + _i4 + " because " + (_i4 - 25));
+	      count++;
 	    }
 	    //NE
 	    if (cellStates[_i4 - 24] && cellStates[_i4 - 24].alive === true) {
-	      count++;console.log("Tally one score for " + _i4 + " because " + (_i4 - 24));
+	      count++;
 	    }
 
 	    //SW
 	    if (cellStates[_i4 + 24] && cellStates[_i4 + 24].alive === true) {
-	      count++;console.log("Tally one score for " + _i4 + " because " + (_i4 + 24));
+	      count++;
 	    }
 	    //S
 	    if (cellStates[_i4 + 25] && cellStates[_i4 + 25].alive === true) {
-	      count++;console.log("Tally one score for " + _i4 + " because " + (_i4 + 25));
+	      count++;
 	    }
 	    //SE
 	    if (cellStates[_i4 + 26] && cellStates[_i4 + 26].alive === true) {
-	      count++;console.log("Tally one score for " + _i4 + " because " + (_i4 + 26));
+	      count++;
 	    };
 
 	    if (_i4 % 25 !== 0) {
 	      //W
 	      if (cellStates[_i4 - 1] && cellStates[_i4 - 1].alive === true) {
-	        count++;console.log(cellStates[_i4 - 1]);
+	        count++;
 	      }
 	    }
 	    if ((_i4 + 1) % 25 !== 0) {
 	      //E
 	      if (cellStates[_i4 + 1] && cellStates[_i4 + 1].alive === true) {
-	        count++;console.log("Tally one score for " + _i4 + " because " + (_i4 + 1));
+	        count++;
 	      }
 	    }
 	    cellStates[_i4].score = count;
@@ -551,12 +549,23 @@
 	  }
 	  update();
 	};
+	var bootTwo = false;
+	var firstBoot = function firstBoot() {
+	  if (bootTwo === false) {
+	    console.log("yeah");
+	    intervalId = setInterval(lifeCycle, 500);
+	    playMode = true;
+	    bootTwo = true;
+	  }
+	};
 
 	var update = function update() {
+
 	  _reactDom2.default.render(_react2.default.createElement(Layout, null), target);
 	};
 
 	update();
+	firstBoot();
 
 /***/ },
 /* 1 */

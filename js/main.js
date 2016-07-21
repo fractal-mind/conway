@@ -54,26 +54,21 @@ let evaluate = () => {
       if (cellStates[i].alive === true) {
 
         if((cellStates[i].score < 2)){
-          console.log("Cell " + i + " dies with " + cellStates[i].score + " neightbors");
           cellStates[i].alive = false;
         }
         if((cellStates[i].score > 3)){
-          console.log("Cell " + i + " dies with " + cellStates[i].score + " neightbors");
           cellStates[i].alive = false;
         }
         if((cellStates[i].score === 2)){
-          console.log("Cell " + i + " lives with " + cellStates[i].score + " neightbors");
           cellStates[i].alive = true;
         }
         if((cellStates[i].score === 3)){
-          console.log("Cell " + i + " lives with " + cellStates[i].score + " neightbors");
           cellStates[i].alive = true;
         }
       };
       if (cellStates[i].alive === false){
 
         if (cellStates[i].score === 3) {
-          console.log("Cell " + i + " is born with " + cellStates[i].score + " neightbors y'all");
           cellStates[i].alive = true;
         };
       };
@@ -113,23 +108,29 @@ class Life extends React.Component {
 
 let intervalId;
 
+
 class Buttons extends React.Component {
   render(){
-
+    let playMode = true;
 
     let handlePause = () => {
       console.log(intervalId)
       clearInterval(intervalId);
+      playMode = false;
+      console.log(playMode);
+      update();
     }
     let handlePlay= () => {
       intervalId = setInterval(lifeCycle, 500);
+      playMode = true;
+      update();
       //determines play speed
     }
 
     return(
       <div>
-        <PauseButton pause={() => handlePause(intervalId)}/>
-        <PlayButton play={() => handlePlay(intervalId)}/>
+        <PauseButton pause={() => handlePause()} playMode={intervalId}/>
+        <PlayButton play={() => handlePlay()} playMode={intervalId}/>
         <ClearButton />
       </div>
     )
@@ -140,7 +141,7 @@ class PauseButton extends React.Component {
   render(){
 
     return(
-      <button onClick={this.props.pause}>Pause</button>
+      <button onClick={this.props.pause} disabled={!intervalId}>Pause</button>
     )
   }
 };
@@ -149,7 +150,7 @@ class PlayButton extends React.Component {
   render(){
 
     return(
-      <button onClick={this.props.play}>Play</button>
+      <button onClick={this.props.play} disabled={intervalId}>Play</button>
     )
   }
 };
@@ -235,34 +236,31 @@ class Cell extends React.Component {
   };
 };
 
-let cellCache;
 //here is where the rules of the game are defined. this function is called according to handlePlay on Buttons
 let lifeCycle = () => {
-  cellCache = cellStates;
-  for(let i = 0; i < cellCache.length; i++){
+  for(let i = 0; i < cellStates.length; i++){
     let count = 0;
-
       //NW
-      if ((cellStates[i - 26]) && (cellStates[i - 26].alive === true)) { count++; console.log("Tally one score for " + i + " because " + (i - 26))}
+      if ((cellStates[i - 26]) && (cellStates[i - 26].alive === true)) { count++; }
       //N
-      if ((cellStates[i - 25]) && (cellStates[i - 25].alive === true)) { count++; console.log("Tally one score for " + i + " because " + (i - 25))}
+      if ((cellStates[i - 25]) && (cellStates[i - 25].alive === true)) { count++; }
       //NE
-      if ((cellStates[i - 24]) && (cellStates[i - 24].alive === true)) { count++; console.log("Tally one score for " + i + " because " + (i - 24))}
+      if ((cellStates[i - 24]) && (cellStates[i - 24].alive === true)) { count++; }
 
       //SW
-      if ((cellStates[i + 24]) && (cellStates[i + 24].alive === true)) { count++; console.log("Tally one score for " + i + " because " + (i + 24))}
+      if ((cellStates[i + 24]) && (cellStates[i + 24].alive === true)) { count++; }
       //S
-      if ((cellStates[i + 25]) && (cellStates[i + 25].alive === true)) { count++; console.log("Tally one score for " + i + " because " + (i + 25))}
+      if ((cellStates[i + 25]) && (cellStates[i + 25].alive === true)) { count++; }
       //SE
-      if ((cellStates[i + 26]) && (cellStates[i + 26].alive === true)) { count++; console.log("Tally one score for " + i + " because " + (i + 26))};
+      if ((cellStates[i + 26]) && (cellStates[i + 26].alive === true)) { count++; };
 
       if ((i % 25) !== 0){
         //W
-        if ((cellStates[i - 1]) && (cellStates[i - 1].alive === true)) { count++; console.log(cellStates[i - 1])}
+        if ((cellStates[i - 1]) && (cellStates[i - 1].alive === true)) { count++; }
       }
       if (((i + 1) % 25) !== 0){
         //E
-        if ((cellStates[i + 1]) && (cellStates[i + 1].alive === true)) { count++; console.log("Tally one score for " + i + " because " + (i + 1))}
+        if ((cellStates[i + 1]) && (cellStates[i + 1].alive === true)) { count++; }
       }
       cellStates[i].score = count;
       scoreSet = true;
@@ -301,11 +299,21 @@ let lifeCycle = () => {
   }
   update();
 }
-
+let bootTwo = false;
+let firstBoot = () => {
+  if (bootTwo === false) {
+    console.log("yeah")
+    intervalId = setInterval(lifeCycle, 500);
+    playMode = true;
+    bootTwo = true;
+  }
+}
 
 let update = function(){
+
   ReactDOM.render(<Layout />, target);
 };
 
 
 update();
+firstBoot();
