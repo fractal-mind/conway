@@ -166,7 +166,8 @@
 	          }, onMouseUp: function onMouseUp() {
 	            return handleMouseUp();
 	          } },
-	        _react2.default.createElement(Life, null)
+	        _react2.default.createElement(Life, null),
+	        _react2.default.createElement(Footer, null)
 	      );
 	    }
 	  }]);
@@ -175,24 +176,58 @@
 	}(_react2.default.Component);
 
 	;
+	var intervalId = void 0;
+	var firstPlay = false;
 
 	var Life = function (_React$Component2) {
 	  _inherits(Life, _React$Component2);
 
-	  function Life() {
+	  function Life(props, context) {
 	    _classCallCheck(this, Life);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Life).apply(this, arguments));
+	    var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(Life).call(this, props, context));
+
+	    _this2.playModeOff = _this2.playModeOff.bind(_this2);
+	    _this2.playModeOn = _this2.playModeOn.bind(_this2);
+	    _this2.state = {
+	      playMode: true
+	    };
+	    return _this2;
 	  }
 
 	  _createClass(Life, [{
+	    key: 'playModeOff',
+	    value: function playModeOff() {
+	      clearInterval(intervalId);
+	      this.setState({ playMode: false });
+	      console.log("Play Mode: " + this.state.playMode);
+	      update();
+	    }
+	  }, {
+	    key: 'playModeOn',
+	    value: function playModeOn() {
+	      intervalId = setInterval(lifeCycle, 100);
+	      this.setState({ playMode: true });
+	      console.log("Play Mode: " + this.state.playMode);
+	      update();
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
+	      if (!firstPlay) {
+	        intervalId = setInterval(lifeCycle, 100);
+	        firstPlay = true;
+	      }
 	      return _react2.default.createElement(
 	        'div',
 	        null,
 	        _react2.default.createElement(Grid, null),
-	        _react2.default.createElement(Buttons, null)
+	        _react2.default.createElement(Buttons, { playModeOn: this.playModeOn, playModeOff: this.playModeOff, playMode: this.state.playMode }),
+	        _react2.default.createElement(
+	          'p',
+	          { className: 'generationCounter' },
+	          generations
+	        )
 	      );
 	    }
 	  }]);
@@ -201,8 +236,6 @@
 	}(_react2.default.Component);
 
 	;
-
-	var intervalId = void 0;
 
 	var Buttons = function (_React$Component3) {
 	  _inherits(Buttons, _React$Component3);
@@ -216,33 +249,21 @@
 	  _createClass(Buttons, [{
 	    key: 'render',
 	    value: function render() {
-	      var playMode = true;
-
-	      var handlePause = function handlePause() {
-	        console.log(intervalId);
-	        clearInterval(intervalId);
-	        playMode = false;
-	        console.log(playMode);
-	        update();
-	      };
-	      var handlePlay = function handlePlay() {
-	        intervalId = setInterval(lifeCycle, 500);
-	        playMode = true;
-	        update();
-	        //determines play speed
-	      };
-
-	      return _react2.default.createElement(
-	        'div',
-	        null,
-	        _react2.default.createElement(PauseButton, { pause: function pause() {
-	            return handlePause();
-	          }, playMode: intervalId }),
-	        _react2.default.createElement(PlayButton, { play: function play() {
-	            return handlePlay();
-	          }, playMode: intervalId }),
-	        _react2.default.createElement(ClearButton, null)
-	      );
+	      if (this.props.playMode) {
+	        return _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(PauseButton, { pause: this.props.playModeOff, playMode: this.props.playMode }),
+	          _react2.default.createElement(ClearButton, null)
+	        );
+	      } else {
+	        return _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(PlayButton, { play: this.props.playModeOn, playMode: this.props.playMode }),
+	          _react2.default.createElement(ClearButton, null)
+	        );
+	      }
 	    }
 	  }]);
 
@@ -265,9 +286,9 @@
 	    value: function render() {
 
 	      return _react2.default.createElement(
-	        'button',
-	        { onClick: this.props.pause, disabled: !intervalId },
-	        'Pause'
+	        'i',
+	        { className: 'controlButton material-icons', onClick: this.props.pause },
+	        'pause_circle_filled'
 	      );
 	    }
 	  }]);
@@ -291,9 +312,9 @@
 	    value: function render() {
 
 	      return _react2.default.createElement(
-	        'button',
-	        { onClick: this.props.play, disabled: intervalId },
-	        'Play'
+	        'i',
+	        { className: 'controlButton material-icons', onClick: this.props.play },
+	        'play_circle_filled'
 	      );
 	    }
 	  }]);
@@ -313,20 +334,20 @@
 	  }
 
 	  _createClass(ClearButton, [{
+	    key: 'handleClick',
+	    value: function handleClick() {
+	      for (var _i3 = 0; _i3 < cellStates.length; _i3++) {
+	        cellStates[_i3].alive = false;
+	      }
+	      update();
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var handleClick = function handleClick() {
-	        for (var _i3 = 0; _i3 < cellStates.length; _i3++) {
-	          cellStates[_i3].alive = false;
-	        }
-	        update();
-	      };
 	      return _react2.default.createElement(
-	        'button',
-	        { onClick: function onClick() {
-	            return handleClick();
-	          } },
-	        'Clear'
+	        'i',
+	        { className: 'clearButton material-icons', onClick: this.handleClick },
+	        'clear'
 	      );
 	    }
 	  }]);
@@ -474,6 +495,39 @@
 
 	;
 
+	var Footer = function (_React$Component11) {
+	  _inherits(Footer, _React$Component11);
+
+	  function Footer() {
+	    _classCallCheck(this, Footer);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Footer).apply(this, arguments));
+	  }
+
+	  _createClass(Footer, [{
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'a',
+	          { href: '//stillwill.net', className: 'attribution' },
+	          '© 2016 Will Moody'
+	        ),
+	        _react2.default.createElement(
+	          'a',
+	          { href: '//github.com/fractal-mind/conway', className: 'source' },
+	          'View Source on Github'
+	        )
+	      );
+	    }
+	  }]);
+
+	  return Footer;
+	}(_react2.default.Component);
+
+	var generations = 0;
 	//here is where the rules of the game are defined. this function is called according to handlePlay on Buttons
 	var lifeCycle = function lifeCycle() {
 	  for (var _i4 = 0; _i4 < cellStates.length; _i4++) {
@@ -547,16 +601,8 @@
 	      };
 	    };**/
 	  }
+	  generations++;
 	  update();
-	};
-	var bootTwo = false;
-	var firstBoot = function firstBoot() {
-	  if (bootTwo === false) {
-	    console.log("yeah");
-	    intervalId = setInterval(lifeCycle, 500);
-	    playMode = true;
-	    bootTwo = true;
-	  }
 	};
 
 	var update = function update() {
@@ -565,7 +611,6 @@
 	};
 
 	update();
-	firstBoot();
 
 /***/ },
 /* 1 */
@@ -20235,7 +20280,7 @@
 
 
 	// module
-	exports.push([module.id, "body {\n  background-color: #424242; }\n\n.container {\n  padding-right: 15px;\n  padding-left: 15px;\n  margin-right: auto;\n  margin-left: auto;\n  position: relative; }\n\ntable {\n  width: 250px;\n  margin-left: auto;\n  margin-right: auto; }\n\nth {\n  min-width: 13px;\n  height: 13px; }\n\n.liveCell {\n  background-color: #7cb342; }\n\n.deadCell {\n  background-color: #212121; }\n\n@media (min-width: 768px) {\n  .container {\n    width: 750px; } }\n\n@media (min-width: 992px) {\n  .container {\n    width: 970px; } }\n\n@media (min-width: 1200px) {\n  .container {\n    width: 1170px; } }\n", ""]);
+	exports.push([module.id, "body {\n  background-color: #424242;\n  color: white; }\n\n.container {\n  padding-right: 15px;\n  padding-left: 15px;\n  margin-right: auto;\n  margin-left: auto;\n  position: relative; }\n\ntable {\n  position: relative;\n  top: 1em;\n  width: 250px;\n  left: 19%; }\n\nth {\n  min-width: 30px;\n  min-height: 30px; }\n\n.liveCell {\n  background-color: #7cb342; }\n\n.deadCell {\n  background-color: #212121; }\n\n.controlButton {\n  position: relative;\n  color: #7cb342;\n  font-size: 71px;\n  top: .5em;\n  left: 3.4em; }\n\n.clearButton {\n  position: relative;\n  font-size: 50px;\n  color: #B71C1C;\n  border-radius: 100%;\n  border: 6px solid;\n  top: .59em;\n  left: 16.5em; }\n\n.generationCounter {\n  font-size: 60px;\n  position: relative;\n  top: -1.73em;\n  left: 9em; }\n\na {\n  color: white; }\n\n.attribution {\n  position: relative;\n  float: right;\n  top: -8em; }\n\n.source {\n  position: relative;\n  top: -8em; }\n\n@media (max-width: 768px) {\n  .container {\n    width: 750px; } }\n\n@media (max-width: 992px) {\n  .container {\n    width: 970px; } }\n\n@media (max-width: 1500px) {\n  .container {\n    width: 1170px; } }\n", ""]);
 
 	// exports
 

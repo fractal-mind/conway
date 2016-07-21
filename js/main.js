@@ -88,52 +88,80 @@ class Layout extends React.Component {
       mouseIsDown = false;
     }
     return(
+
       <div className="container"  onMouseDown={() => handleMouseDown()} onMouseUp={() => handleMouseUp()}>
         <Life />
+        <Footer />
       </div>
     )
   }
 };
+let intervalId;
+let firstPlay = false;
+
+
 
 class Life extends React.Component {
+  constructor(props, context){
+    super(props, context);
+    this.playModeOff = this.playModeOff.bind(this);
+    this.playModeOn = this.playModeOn.bind(this);
+    this.state = {
+      playMode: true
+    }
+  }
+  playModeOff(){
+    clearInterval(intervalId);
+    this.setState({playMode: false});
+    console.log("Play Mode: " + this.state.playMode);
+    update();
+  };
+  playModeOn(){
+    intervalId = setInterval(lifeCycle, 100);
+    this.setState({playMode: true});
+    console.log("Play Mode: " + this.state.playMode);
+    update();
+  };
+
+
   render(){
+    if (!firstPlay) {
+      intervalId = setInterval(lifeCycle, 100);
+      firstPlay = true;
+    }
     return(
       <div>
         <Grid />
-        <Buttons />
+        <Buttons playModeOn={this.playModeOn} playModeOff={this.playModeOff} playMode={this.state.playMode} />
+        <p className="generationCounter">{generations}</p>
       </div>
     )
   }
 };
 
-let intervalId;
+
 
 
 class Buttons extends React.Component {
   render(){
-    let playMode = true;
+    if (this.props.playMode){
+      return(
+        <div>
+          <PauseButton pause={this.props.playModeOff} playMode={this.props.playMode}/>
 
-    let handlePause = () => {
-      console.log(intervalId)
-      clearInterval(intervalId);
-      playMode = false;
-      console.log(playMode);
-      update();
-    }
-    let handlePlay= () => {
-      intervalId = setInterval(lifeCycle, 500);
-      playMode = true;
-      update();
-      //determines play speed
+          <ClearButton />
+        </div>
+      )
+    } else {
+      return(
+        <div>
+
+          <PlayButton play={this.props.playModeOn} playMode={this.props.playMode}/>
+          <ClearButton />
+        </div>
+      )
     }
 
-    return(
-      <div>
-        <PauseButton pause={() => handlePause()} playMode={intervalId}/>
-        <PlayButton play={() => handlePlay()} playMode={intervalId}/>
-        <ClearButton />
-      </div>
-    )
   }
 };
 
@@ -141,7 +169,7 @@ class PauseButton extends React.Component {
   render(){
 
     return(
-      <button onClick={this.props.pause} disabled={!intervalId}>Pause</button>
+      <i className="controlButton material-icons" onClick={this.props.pause}>pause_circle_filled</i>
     )
   }
 };
@@ -150,21 +178,22 @@ class PlayButton extends React.Component {
   render(){
 
     return(
-      <button onClick={this.props.play} disabled={intervalId}>Play</button>
+      <i className="controlButton material-icons" onClick={this.props.play}>play_circle_filled</i>
     )
   }
 };
 
 class ClearButton extends React.Component {
-  render(){
-    let handleClick = () => {
-      for (let i = 0; i < cellStates.length; i++) {
-        cellStates[i].alive = false;
-      }
-      update();
+  handleClick(){
+    for (let i = 0; i < cellStates.length; i++) {
+      cellStates[i].alive = false;
     }
+    update();
+  };
+  render(){
     return(
-      <button onClick={() => handleClick()}>Clear</button>
+
+      <i className="clearButton material-icons" onClick={this.handleClick}>clear</i>
     )
   }
 };
@@ -236,6 +265,18 @@ class Cell extends React.Component {
   };
 };
 
+class Footer extends React.Component {
+  render(){
+    return(
+      <div>
+          <a href="//stillwill.net" className="attribution">© 2016 Will Moody</a>
+          <a href="//github.com/fractal-mind/conway" className="source">View Source on Github</a>
+      </div>
+    )
+  }
+}
+
+let generations = 0;
 //here is where the rules of the game are defined. this function is called according to handlePlay on Buttons
 let lifeCycle = () => {
   for(let i = 0; i < cellStates.length; i++){
@@ -297,16 +338,8 @@ let lifeCycle = () => {
 
 
   }
+  generations++;
   update();
-}
-let bootTwo = false;
-let firstBoot = () => {
-  if (bootTwo === false) {
-    console.log("yeah")
-    intervalId = setInterval(lifeCycle, 500);
-    playMode = true;
-    bootTwo = true;
-  }
 }
 
 let update = function(){
@@ -316,4 +349,3 @@ let update = function(){
 
 
 update();
-firstBoot();

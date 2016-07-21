@@ -1,5 +1,6 @@
 body
   background-color: #424242;
+  color: white;
 
 .container
   padding-right: 15px;
@@ -9,13 +10,14 @@ body
   position: relative;
 
 table
+  position: relative;
+  top: 1em;
   width: 250px;
-  margin-left: auto;
-  margin-right: auto;
+  left: 19%
 
 th
-  min-width: 13px;
-  height: 13px;
+  min-width: 30px;
+  min-height: 30px;
 
 .liveCell
   background-color: #7cb342;
@@ -23,14 +25,51 @@ th
 .deadCell
   background-color: #212121;
 
-@media (min-width: 768px)
+.controlButton
+  position: relative;
+  color: #7cb342;
+  font-size: 71px;
+  top: .5em;
+  left: 3.4em;
+
+
+.clearButton
+  position: relative;
+  font-size: 50px;
+  color: #B71C1C;
+  border-radius: 100%;
+  border: 6px solid;
+  top: .59em;
+  left: 16.5em;
+
+.generationCounter
+  font-size: 60px
+  position: relative;
+  top: -1.73em;
+  left: 9em
+
+a
+  color: white;
+
+.attribution
+  position: relative
+  float: right;
+
+  top: -8em;
+
+.source
+  position: relative
+
+  top: -8em;
+
+@media (max-width: 768px)
   .container
     width: 750px;
 
-@media (min-width: 992px)
+@media (max-width: 992px)
   .container
     width: 970px;
 
-@media (min-width: 1200px)
+@media (max-width: 1500px)
   .container
     width: 1170px;
